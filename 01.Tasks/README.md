@@ -36,7 +36,4 @@
 - [Задача 4](https://github.com/allseenn/python3/blob/main/01.Tasks/04.py)
 - [Задача 6](https://github.com/allseenn/python3/blob/main/01.Tasks/06.py)
 - [Задача 8](https://github.com/allseenn/python3/blob/main/01.Tasks/08.py)
-- [Задача 2](https://github.com/allseenn/python3/blob/main/01.Tasks/02.py)
-- [Задача 2](https://github.com/allseenn/python3/blob/main/01.Tasks/02.py)
-- [Задача 2](https://github.com/allseenn/python3/blob/main/01.Tasks/02.py)
-- [Задача 2](https://github.com/allseenn/python3/blob/main/01.Tasks/02.py)
+
