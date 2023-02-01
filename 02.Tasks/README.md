@@ -18,7 +18,7 @@
 ), не превосходящие числа N.
 10 -> 1 2 4 8
 
-# Решение задач из семинара
-10. [Задача 10]()
-12. [Задача 12]()
-14. [Задача 14]()
+# Решение задач из презентации семинара
+10. [Задача 10](https://github.com/allseenn/python3/blob/main/02.Tasks/10.py)
+12. [Задача 12](https://github.com/allseenn/python3/blob/main/02.Tasks/12.py)
+14. [Задача 14](https://github.com/allseenn/python3/blob/main/02.Tasks/14.py)
