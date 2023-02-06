@@ -51,6 +51,6 @@
 12
 ```
 # Решение задач из презентации к семинару
-[Задача 16](https://github.com/allseenn/python3/blob/main/03.Tasks/16.py)
-[Задача 18](https://github.com/allseenn/python3/blob/main/03.Tasks/18.py)
-[Задача 20](https://github.com/allseenn/python3/blob/main/03.Tasks/20.py)
+- [Задача 16](https://github.com/allseenn/python3/blob/main/03.Tasks/16.py)
+- [Задача 18](https://github.com/allseenn/python3/blob/main/03.Tasks/18.py)
+- [Задача 20](https://github.com/allseenn/python3/blob/main/03.Tasks/20.py)
