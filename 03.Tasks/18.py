@@ -15,7 +15,7 @@ print(*array_a) # вывод содержимого массива A (списк
 number_x = int(input()) # ввод числа X - искомого числа
 plus = [i-number_x for i in array_a if i-number_x >= 0] # генератор разности зн.массива и X больше нуля
 minus = [i-number_x for i in array_a if i-number_x < 0] # генератор разности зн.массива и X меньше нуля
-maximum = min(plus) if len(plus) > 0 else MAXIMUM+number_x # тренарное условие по поиску ближайшего справа
+maximum = min(plus) if len(plus) > 0 else MAXIMUM+number_x # тернарное условие по поиску ближайшего справа
 minimum = max(minus) if len(minus) > 0 else -(MAXIMUM+number_x) # условие по поиску ближайшего слева
 # Вывод ближайшего числа X
 # Если число X (например 5) имеет два ближайших в обе стороны (4 <- 5 -> 6),
