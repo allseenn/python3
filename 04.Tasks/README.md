@@ -29,5 +29,5 @@
 9
 ```
 # Решение задач из презентации к семенару
-- [Задача 22]()
-- [Задача 24]()
+- [Задача 22](https://github.com/allseenn/python3/blob/main/04.Tasks/22.py)
+- [Задача 24](https://github.com/allseenn/python3/blob/main/04.Tasks/24.py)
