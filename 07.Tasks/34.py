@@ -10,5 +10,35 @@
 # пара-ра-рам рам-пам-папам па-ра-па-дам
 # Вывод:
 # Парам пам-пам
-phrases = input("Enter phrases")
+def syllable(words: str) -> int:
+    flag = False
+    counter = 0    
+    for i in words:
+        if i in vowels and flag == False: # Set flag when vowel comes and no previous one
+            flag = True
+            counter += 1
+        elif i in vowels and flag == True: # After one vowel comes another - error code
+            return -1
+        else: # consonant
+            flag = False
+    return counter
+
+
+phrases = [i.lower() for i in input("Enter Viny phrases: ").split()]
+vowels = ['а', 'у', 'о', 'ы', 'и', 'э', 'я', 'ю', 'ё', 'е', 'a', 'e', 'i', 'o', 'u']
+vow = -2
+for i in phrases:
+    if syllable(i) <= 0:  # i syllable -1 "aa"
+        print("Пам парам")
+        break
+    elif vow == -2: #  If first time vow is -2 assighn syllable to it
+        vow = syllable(i)
+    elif vow != syllable(i): # if prev syllable less 
+        print("Пам парам")
+        vow = -2
+        break 
+if vow > 0:  # if -1 "aa" or 0 empty or -2 error 
+    print("Парам пам-пам")
+elif len(phrases) <= 0: # if no phrases was given
+    print("Пам парам")
 
