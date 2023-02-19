@@ -25,7 +25,7 @@ print_operation_table(lambda x, y: x * y) 1 2 3 4 5 6
  4 8 12 16 20 24
  5 10 15 20 25 30
  6 12 18 24 30 36
-## Решение
+## Решение задач из презентации к семинару
 - [Задача 34](https://github.com/allseenn/python3/blob/main/07.Tasks/34.py
 - [Задача 36](https://github.com/allseenn/python3/blob/main/07.Tasks/36.py)
 )
