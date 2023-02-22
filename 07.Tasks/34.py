@@ -25,7 +25,7 @@ def syllable(words: str) -> int:
 
 
 phrases = [i.lower() for i in input("Enter Viny phrases: ").split()]
-vowels = ['а', 'у', 'о', 'ы', 'и', 'э', 'я', 'ю', 'ё', 'е', 'a', 'e', 'i', 'o', 'u']
+vowels = ['а', 'у', 'о', 'ы', 'и', 'э', 'я', 'ю', 'ё', 'е', 'a', 'e', 'i', 'o', 'u', 'y']
 vow = -2
 for i in phrases:
     if syllable(i) <= 0:  # i syllable -1 "aa"
