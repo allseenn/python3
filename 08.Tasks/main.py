@@ -18,8 +18,8 @@ Enter a number or q(uit): "
 
 SUBMENU = "\
 i. set id\n\
-f. set first name\n\
 l. set last name\n\
+f. set first name\n\
 o. set middle name\n\
 b. set birthday\n\
 c. set mobile\n\
@@ -33,7 +33,7 @@ REC: "
 def open_base(filename: str = "base.csv") -> pd.DataFrame:
     if os.path.isfile(filename):
         try:
-            base = pd.read_csv(filename)
+            base = pd.read_csv(filename, dtype=str)
         except BaseException as error:
             return f"Error! {error}"
         return base
@@ -47,7 +47,7 @@ def new_base(size: int = 200) -> pd.DataFrame :
     middles = ['Андреевич', 'Борисович', 'Владимирович', 'Георгиевич', 'Дмитриевич', 'Евгеньевич', 'Иосифович', 'Кириллович', 'Леонидович', 'Михаилович', 'Николаевич', 'Олегович', 'Петрович', 'Романович', 'Сергеевич', 'Тимофеевич', 'Умарович', 'Фёдорович', 'Харитонович', 'Эмануилович', 'Юрьевич', 'Яковлевич']
     mobile_prefix = ['910', '915', '916', '917', '919', '985', '986', '903', '905', '906', '909', '962', '963', '964', '965', '966', '967', '968', '969', '980', '983', '986', '925', '926', '929', '936', '999', '901', '958', '977', '999', '995', '996', '999']
     phone_prefix = ['495', '499', '498']
-    soc_id = pd.Series([i for i in range(size)])
+    soc_id = pd.Series([str(i) for i in range(11111, 11111+size)])
     last_name = pd.Series([''.join(random.sample(syllables, random.randint(2, 3)) + random.sample(endings, 1)).title() for i in range(size)])
     first_name = pd.Series(["".join(random.sample(names, 1)) for i in range(size)])
     middle_name = pd.Series(["".join(random.sample(middles, 1)) for i in range(size)])
@@ -62,7 +62,7 @@ def new_base(size: int = 200) -> pd.DataFrame :
                         'cell': mobile,
                         'tel': phone
                         })
-    base.set_index("id")
+    #base.set_index("id")
     return base
 # 3 Save base
 def save_base(base: pd.DataFrame, filename: str = "base.csv") -> str:
@@ -80,9 +80,13 @@ def save_base(base: pd.DataFrame, filename: str = "base.csv") -> str:
         return f"File {filename} id created"
 #!4 Find record
 def find_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
-    length = [len(base)]
-    base.loc[length[0]] = length + record
-    return base
+    columns = ["id", "last", "first", "middle", "birth", "cell", "tel"]
+    que = " & ".join([f'{columns[i]} == "{record[i]}"' for i in range(len(columns)) if record[i] != ""])
+    try:
+        find = base.query(que)
+    except BaseException as error:
+            return f"Error! {error}"
+    return find
 #!5 Change record
 def change_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
     length = [len(base)]
@@ -90,8 +94,8 @@ def change_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
     return base
 #!6 Add record
 def add_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
-    length = [len(base)]
-    base.loc[length[0]] = length + record
+    record[0] = str(random.randint(22222,99999))
+    base.loc[record[0]] = record
     return base
 #!7 Import records
 def import_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
@@ -100,8 +104,10 @@ def import_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
     return base
 #!8 Delete records
 def del_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
-    length = [len(base)]
-    base.loc[length[0]] = length + record
+    if record[0] != "":
+        base.drop(base[base.id == record[0]].index, inplace=True)
+    else:
+        return f"Введите id для удаления"
     return base
 # 9. Clean base
 def clean_base(base: pd.DataFrame) -> pd.DataFrame:
@@ -164,24 +170,31 @@ def submenu(base):
                 record[0] = input("edit id: ")
                 # base = open_base(filename)
                 # msg = "Base is open" if type(base) != str else base
-            case "f": # f. set first name
-                record[1] = input("edit id: ")
             case "l": # l. set last name
-                record[2] = input("edit id: ")
+                record[1] = input("edit last name: ")
+            case "f": # f. set first name
+                record[2] = input("edit first name: ")
             case "o": # o. set middle name
-                record[3] = input("edit id: ")
+                record[3] = input("edit middle name: ")
             case "b": # b. set birthday
-                record[4] = input("edit id: ")
+                record[4] = input("edit birth day: ")
             case "c": # c. set mobile
-                record[5] = input("edit id: ")
+                record[5] = input("edit cellular: ")
             case "p": # p. set phone
-                record[6] = input("edit id: ")
+                record[6] = input("edit phone: ")
             case "s": # s. search records
-                find_record(record)
+                print(find_record(base, record))
+                # if find != str:
+                #     print(find)
+                # else:
+                #     print(find)
+                choice = input("d(elete), u(pdate):")
             case "a": # a. add/update record
-                add_record(record)
+                base = add_record(base, record)
+                msg = "Record was added" if type(base) != str else base
             case "d": # d. delete record
-                del_record(record)
+                base = del_record(base, record)
+                msg = "Record was deleted" if type(base) != str else base
             case "q":
                 exit()
     return base
