@@ -4,16 +4,16 @@ import datetime
 import os
 
 MENU = "\
-1. Open base\n\
-2. Generate base\n\
-3. Save base\n\
-4. Find record\n\
-5. Add record \n\
-6. Delete record \n\
-7! Import ; \n\
-8! Import ,\n\
+1. Open base from file\n\
+2. Generate new base\n\
+3. Save base to file\n\
+4. Find record in base\n\
+5. Add record to base\n\
+6. Update record in base\n\
+7. Delete record in base\n\
+8. Delete base file\n\
 9. Clean base\n\
-0. Delete base\n\
+0. Import to base\n\
 Enter a number or q(uit): "
 
 SUBMENU = "\
@@ -24,8 +24,9 @@ m. set middle name\n\
 b. set birthday\n\
 c. set mobile\n\
 p. set phone\n\
-REC: "
-
+k. kill buffer\n\
+BUF: "
+record = ["", "", "", "", "", "", ""]
 # 1 Open base
 def open_base(filename: str = "base.csv") -> pd.DataFrame:
     if os.path.isfile(filename):
@@ -36,7 +37,7 @@ def open_base(filename: str = "base.csv") -> pd.DataFrame:
         return base
     else:
         return "File not found, make new one or save base"
-# 2 Generate base
+# 2 Generate new base
 def new_base(size: int = 200) -> pd.DataFrame :
     syllables = ['ба', 'бо', 'бу', 'бы', 'би', 'бя', 'бю', 'бе', 'ва', 'во', 'ву', 'вы', 'вэ', 'ви', 'вя', 'вю', 'ве', 'да', 'до', 'ду', 'ды', 'ди', 'дя', 'дю', 'де', 'га', 'го', 'гу', 'ги', 'гя', 'гю', 'ге', 'за', 'зо', 'зу', 'зи', 'зя', 'зю', 'зе', 'ка', 'ко', 'ку', 'ки', 'кя', 'кю', 'ке', 'са', 'со', 'су', 'сы', 'си', 'ся', 'сю', 'се', 'па', 'по', 'пу', 'пы', 'пи', 'пя', 'пю', 'пе', 'жа', 'жо', 'жу', 'жи', 'жю', 'же', 'ла', 'ло', 'лу', 'лы', 'ли', 'ля', 'лю', 'ле', 'ма', 'мо', 'му', 'мы', 'ми', 'мя', 'мю', 'ме', 'на', 'но', 'ну', 'ны', 'ни', 'ня', 'ню', 'не', 'ра', 'ро', 'ру', 'ри', 'ря', 'рю', 'ре', 'та', 'то', 'ту', 'ти', 'тя', 'тю', 'те', 'ха', 'хо', 'ху', 'хи', 'хя', 'хю', 'хе', 'ца', 'цо', 'цу', 'ци', 'це', 'ша', 'шо', 'шу', 'ши', 'ше', 'ща', 'що', 'щу', 'щи', 'ще', 'ча', 'чо', 'чу', 'чи', 'че', 'фа', 'фо', 'фу', 'фи', 'фя', 'фе', 'аб', 'об', 'уб', 'иб', 'яб', 'юб', 'ав', 'ов', 'ув', 'ив', 'яв', 'юв', 'ев', 'ад', 'од', 'уд', 'ид', 'яд', 'юд', 'ед', 'аг', 'ог', 'уг', 'иг', 'яг', 'юг', 'ег', 'аз', 'оз', 'уз', 'из', 'яз', 'юз', 'ез', 'ак', 'ок', 'ук', 'ик', 'як', 'юк', 'ек', 'ас', 'ос', 'ус', 'ис', 'яс', 'юс', 'ес', 'ап', 'оп', 'уп', 'ип', 'яп', 'юп', 'аж', 'ож', 'уж', 'иж', 'юж', 'еж', 'ал', 'ол', 'ул', 'ил', 'ял', 'юл', 'ел', 'ам', 'ом', 'ум', 'им', 'ям', 'юм', 'ем', 'ан', 'он', 'ун', 'ин', 'ян', 'юн', 'ен', 'ар', 'ор', 'ур', 'ир', 'яр', 'юр', 'ер', 'ат', 'от', 'ут', 'ит', 'ят', 'ют', 'ет', 'ах', 'ох', 'ух', 'их', 'ях', 'юх', 'ех', 'ац', 'оц', 'уц', 'иц', 'яц', 'юц', 'ец', 'аш', 'ош', 'уш', 'иш', 'яш', 'юш', 'еш', 'ач', 'оч', 'уч', 'ич', 'яч', 'юч', 'еч', 'аф', 'оф', 'уф', 'иф', 'яф', 'юф', 'еф']
     endings = ['лин', 'лов', 'нин', 'нов', 'шин', 'шов', 'рин', 'ров', 'пин', 'пов', 'ков', 'кин', 'ко', 'кий', 'ций', 'вич', 'цев', 'цов', 'цин']
@@ -61,7 +62,7 @@ def new_base(size: int = 200) -> pd.DataFrame :
                         })
     #base.set_index("id")
     return base
-# 3 Save base
+# 3 Save base to file
 def save_base(base: pd.DataFrame, filename: str = "base.csv") -> str:
     if os.path.isfile(filename):
         try:
@@ -75,8 +76,8 @@ def save_base(base: pd.DataFrame, filename: str = "base.csv") -> str:
         except BaseException as error:
             return f"Error! {error}"
         return f"File {filename} id created"
-#!4 Find record
-def find_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
+# 4. Find record in base
+def find_record(base: pd.DataFrame) -> pd.DataFrame:
     columns = ["id", "last", "first", "middle", "birth", "cell", "tel"]
     que = " & ".join([f'{columns[i]} == "{record[i]}"' for i in range(len(columns)) if record[i] != ""])
     try:
@@ -84,41 +85,54 @@ def find_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
     except BaseException as error:
             return f"Error! {error}"
     return "Not found" if find.empty else find
-#!5 Change record
-# df.loc[df[<some_column_name>] == <condition>, [<another_column_name>]] = <value_to_add>
-def update_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
-    length = [len(base)]
-    base.loc[length[0]] = length + record
-    return base
-#!6 Add record
-def add_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
+# 5. Add record to base
+def add_record(base: pd.DataFrame) -> pd.DataFrame:
     record[0] = str(random.randint(22222,99999))
     base.loc[record[0]] = record
     return base
-#!7 Import records
-def import_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
+#!6 Update record in base
+# df.loc[df[<some_column_name>] == <condition>, [<another_column_name>]] = <value_to_add>
+def update_record(base: pd.DataFrame) -> pd.DataFrame:
+    list(base.columns.values)
+    for i in range(len(record)):
+        if record[i] != "":
+            base.loc[df[base[i]] == record[i]]
     length = [len(base)]
     base.loc[length[0]] = length + record
     return base
-#!8 Delete records
-def del_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
+# 7. Delete record in base
+def del_record(base: pd.DataFrame) -> pd.DataFrame:
     if record[0] != "":
         base.drop(base[base.id == record[0]].index, inplace=True)
     else:
         return f"Введите id для удаления"
     return base
-# 9. Clean base
-def clean_base(base: pd.DataFrame) -> pd.DataFrame:
-    base = pd.DataFrame()
-    return base
-# 0. Delete base
+# 8. Delete base file
 def del_file(filename: str) -> str:
     if os.path.isfile(filename):
         os.remove(filename)
         return f"{filename} deleted"
     else:
         return f"{filename} not found"
-
+# 9. Clean base
+def clean_base(base: pd.DataFrame) -> pd.DataFrame:
+    base = pd.DataFrame()
+    return base
+#!0 Import to base
+def import_record(base: pd.DataFrame) -> pd.DataFrame:
+    length = [len(base)]
+    base.loc[length[0]] = length + record
+    return base
+# buffer
+def buffer(base, number):
+    record = record
+    record= base.loc[number].tolist()
+    return 
+#kill set
+def kill_buffer():
+    for i in range(len(record)):
+        record[i] = ""
+    return
 # main menu 10 digits
 def menu():
     base = pd.DataFrame()
@@ -142,26 +156,30 @@ def menu():
                 filename = input("Enter base.csv name: ")
                 filename = "base.csv" if filename == "" else filename 
                 msg = save_base(base, filename)
-            case "4": # Find record
-                submenu(base, "Set one or more param\nf. find record")
-            case "5": # Add  record
-                submenu(base, "Set all params\na. add record")
-            case "8": # Delete  record
-                submenu(base, "Set id only to del\nd. add record")  
-            case "9": # clean base
+            case "4": # Find record in base
+                submenu(base, "Set one or more elements\nexecute find with first key\nf. find record")
+            case "5": # Add  record to base 
+                submenu(base, "Set all elements\nexecute adding with first key\na. add record")
+            case "6": # Update record in base
+                submenu(base, "Set id only for deletion\nexecute del with first key\nd. add record") 
+            case "7": # Delete record from base
+                submenu(base, "Set id only for deletion\nexecute del with first key\nd. add record")   
+            case "8": # delete base file
+                filename = input("Enter filename to delete: ") 
+                msg = del_file(filename)
+            case "9": # Clean base
                 base = input("Enter word 'base' in prompt: ") 
                 base = clean_base(base)
                 msg = "Database is clean" if base.empty else f"Database contains {len(base)} rows"
-            case "0": # delete base
-                filename = input("Enter filename to delete: ") 
-                msg = del_file(filename)
-    return print("Good by!")
+            case "0": # Import base
+                pass
+    print("\033c", end="")
+    return print("Have a nice day!\nGood Bye!")
 # Submenu 10 chars
 def submenu(base: pd.DataFrame , msg: str) -> pd.DataFrame:
     choice = ""
-    record = ["", "", "", "", "", "", ""]
     while choice != "r":
-        os.system('cls')
+        print("\033c", end="")
         print(f"{msg}")
         print(SUBMENU, end="")
         print(*record)
@@ -169,8 +187,6 @@ def submenu(base: pd.DataFrame , msg: str) -> pd.DataFrame:
         match choice:
             case "i": # i. set id
                 record[0] = input("edit id: ")
-                # base = open_base(filename)
-                # msg = "Base is open" if type(base) != str else base
             case "l": # l. set last surname
                 record[1] = input("edit last name: ")
             case "n": # f. set first name
@@ -183,18 +199,28 @@ def submenu(base: pd.DataFrame , msg: str) -> pd.DataFrame:
                 record[5] = input("edit cellular: ")
             case "p": # p. set phone
                 record[6] = input("edit phone: ")
+            case "k": # k. kill buffer
+                kill_buffer()
             case "f": # s. search records
-                print(find_record(base, record))
-                choice = input("a(ny) key to return:")
-            case "a": # a. add/update record
-                base = add_record(base, record)
+                print("\033c", end="")
+                print(find_record(base))
+                number = int(input("enter line number to copy in BUF\nor hit Enter to return: "))
+                buffer(base, number)
+            case "a": # a. add record
+                base = add_record(base)
                 "Record was added" if type(base) != str else base
                 choice = input("a(ny) key to return:")
             case "d": # d. delete record
-                base = del_record(base, record)
+                base = del_record(base)
                 "Record was deleted" if type(base) != str else base
                 choice = input("a(ny) key to return:")
+            case "u": # d. delete record
+                base = update_record(base)
+                "Record was updated" if type(base) != str else base
+                choice = input("a(ny) key to return:")
             case "q":
+                print("\033c", end="")
+                print("Have a nice day!\nGood Bye!")
                 exit()
     return base
 
