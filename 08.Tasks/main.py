@@ -52,15 +52,7 @@ def new_base(size: int = 200) -> pd.DataFrame :
     birth_day = pd.Series([datetime.date.fromtimestamp(random.randint(0, 1000000000)).strftime('%Y-%m-%d') for i in range(size)]) # , dtype='datetime64[ns]'
     mobile = pd.Series(['8' + ''.join(random.sample(mobile_prefix, 1)) + str(random.randint(1111111, 9999999)) for i in range(size)])
     phone = pd.Series(['8' + ''.join(random.sample(phone_prefix, 1)) + str(random.randint(1111111, 9999999)) for i in range(size)])
-    base = pd.DataFrame({ 'id': soc_id,
-                        'last': last_name,
-                        'first': first_name,
-                        'middle': middle_name,
-                        'birth': birth_day,
-                        'cell': mobile,
-                        'tel': phone
-                        })
-    #base.set_index("id")
+    base = pd.DataFrame({ 'id': soc_id, 'last': last_name, 'first': first_name, 'middle': middle_name, 'birth': birth_day, 'cell': mobile, 'tel': phone })
     return base
 # 3 Save base to file
 def save_base(base: pd.DataFrame, filename: str = "base.csv") -> str:
@@ -78,7 +70,7 @@ def save_base(base: pd.DataFrame, filename: str = "base.csv") -> str:
         return f"File {filename} id created"
 # 4. Find record in base
 def find_record(base: pd.DataFrame) -> pd.DataFrame:
-    columns = ["id", "last", "first", "middle", "birth", "cell", "tel"]
+    columns = list(base.columns.values)
     que = " & ".join([f'{columns[i]} == "{record[i]}"' for i in range(len(columns)) if record[i] != ""])
     try:
         find = base.query(que)
@@ -90,15 +82,11 @@ def add_record(base: pd.DataFrame) -> pd.DataFrame:
     record[0] = str(random.randint(22222,99999))
     base.loc[record[0]] = record
     return base
-#!6 Update record in base
-# df.loc[df[<some_column_name>] == <condition>, [<another_column_name>]] = <value_to_add>
+#6. Update record in base
 def update_record(base: pd.DataFrame) -> pd.DataFrame:
-    list(base.columns.values)
     for i in range(len(record)):
         if record[i] != "":
-            base.loc[df[base[i]] == record[i]]
-    length = [len(base)]
-    base.loc[length[0]] = length + record
+            base.loc[base['id'] == record[0], list(base.columns.values)[i]] = record[i]
     return base
 # 7. Delete record in base
 def del_record(base: pd.DataFrame) -> pd.DataFrame:
@@ -124,10 +112,10 @@ def import_record(base: pd.DataFrame) -> pd.DataFrame:
     base.loc[length[0]] = length + record
     return base
 # buffer
-def buffer(base, number):
-    record = record
-    record= base.loc[number].tolist()
-    return 
+def buffer(base, number): 
+    for i in range(len(record)):
+        record[i] = base.loc[number].tolist()[i]
+    return
 #kill set
 def kill_buffer():
     for i in range(len(record)):
@@ -161,9 +149,9 @@ def menu():
             case "5": # Add  record to base 
                 submenu(base, "Set all elements\nexecute adding with first key\na. add record")
             case "6": # Update record in base
-                submenu(base, "Set id only for deletion\nexecute del with first key\nd. add record") 
+                submenu(base, "Set any element for update\nexecute del with first key\nu. update record") 
             case "7": # Delete record from base
-                submenu(base, "Set id only for deletion\nexecute del with first key\nd. add record")   
+                submenu(base, "Set id only for deletion\nexecute del with first key\nd. delete record")   
             case "8": # delete base file
                 filename = input("Enter filename to delete: ") 
                 msg = del_file(filename)
@@ -204,19 +192,22 @@ def submenu(base: pd.DataFrame , msg: str) -> pd.DataFrame:
             case "f": # s. search records
                 print("\033c", end="")
                 print(find_record(base))
-                number = int(input("enter line number to copy in BUF\nor hit Enter to return: "))
-                buffer(base, number)
+                try:
+                    number = int(input("enter line number to copy in BUF\nor hit Enter to return: "))
+                    buffer(base, number)
+                except BaseException as error:
+                    print(f"enter line number to copy in BUF\nor hit Enter to return: ")
             case "a": # a. add record
                 base = add_record(base)
-                "Record was added" if type(base) != str else base
+                print("Record was added") if type(base) != str else print(base)
                 choice = input("a(ny) key to return:")
             case "d": # d. delete record
                 base = del_record(base)
-                "Record was deleted" if type(base) != str else base
+                print("Record was deleted") if type(base) != str else print(base)
                 choice = input("a(ny) key to return:")
             case "u": # d. delete record
                 base = update_record(base)
-                "Record was updated" if type(base) != str else base
+                print("Record was updated") if type(base) != str else print(base)
                 choice = input("a(ny) key to return:")
             case "q":
                 print("\033c", end="")
