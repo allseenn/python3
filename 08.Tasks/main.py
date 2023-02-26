@@ -25,7 +25,8 @@ b. set birthday\n\
 c. set mobile\n\
 p. set phone\n\
 s. search records\n\
-a. add/update record\n\
+a. add record\n\
+u. update record\n\
 d. delete record\n\
 REC: "
 
@@ -86,9 +87,10 @@ def find_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
         find = base.query(que)
     except BaseException as error:
             return f"Error! {error}"
-    return find
+    return "Not found" if find.empty else find
 #!5 Change record
-def change_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
+# df.loc[df[<some_column_name>] == <condition>, [<another_column_name>]] = <value_to_add>
+def update_record(base: pd.DataFrame,  record: list) -> pd.DataFrame:
     length = [len(base)]
     base.loc[length[0]] = length + record
     return base
@@ -127,7 +129,7 @@ def menu():
     choice = ""
     msg = "Main DBS menu"
     while choice != "q":
-        os.system('cls')
+        print("\033c", end="")
         print(f"MSG: {msg}")
         choice = input(MENU)
         match choice:
@@ -160,7 +162,7 @@ def submenu(base):
     msg = "Edit, delete, add or update records"
     record = ["", "", "", "", "", "", ""]
     while choice != "m":
-        os.system('cls')
+        print("\033c", end="")
         print(f"MSG: {msg}")
         print(SUBMENU, end="")
         print(*record)
@@ -189,8 +191,11 @@ def submenu(base):
                 # else:
                 #     print(find)
                 choice = input("d(elete), u(pdate):")
-            case "a": # a. add/update record
+            case "a": # a. add record
                 base = add_record(base, record)
+                msg = "Record was added" if type(base) != str else base
+            case "u": # u. update record
+                base = update_record(base, record)
                 msg = "Record was added" if type(base) != str else base
             case "d": # d. delete record
                 base = del_record(base, record)
