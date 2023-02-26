@@ -7,9 +7,9 @@ MENU = "\
 1. Open base\n\
 2. Generate base\n\
 3. Save base\n\
-4 Ops with records\n\
-5! Export to ; \n\
-6! Export to , \n\
+4. Find record\n\
+5. Add record \n\
+6. Delete record \n\
 7! Import ; \n\
 8! Import ,\n\
 9. Clean base\n\
@@ -19,14 +19,11 @@ Enter a number or q(uit): "
 SUBMENU = "\
 i. set id\n\
 l. set last name\n\
-f. set first name\n\
-o. set middle name\n\
+n. set first name\n\
+m. set middle name\n\
 b. set birthday\n\
 c. set mobile\n\
 p. set phone\n\
-s. search records\n\
-a. add/update record\n\
-d. delete record\n\
 REC: "
 
 # 1 Open base
@@ -144,57 +141,58 @@ def menu():
                 filename = input("Enter base.csv name: ")
                 filename = "base.csv" if filename == "" else filename 
                 msg = save_base(base, filename)
-            case "4": # Ops with records
-                submenu(base)
+            case "4": # Find record
+                submenu(base, "Set one or more param\nf. find record")
+            case "5": # Add  record
+                submenu(base, "Set all params\na. add record")
+            case "8": # Delete  record
+                submenu(base, "Set id only to del\nd. add record")  
             case "9": # clean base
                 base = input("Enter word 'base' in prompt: ") 
                 base = clean_base(base)
-                msg = "Database is clean" if base.empty else f"MSG:Database contains {len(base)} rows"
+                msg = "Database is clean" if base.empty else f"Database contains {len(base)} rows"
             case "0": # delete base
                 filename = input("Enter filename to delete: ") 
                 msg = del_file(filename)
     return print("Good by!")
 # Submenu 10 chars
-def submenu(base):
+def submenu(base: pd.DataFrame , msg: str) -> pd.DataFrame:
     choice = ""
-    msg = "Edit, delete, add or update records"
     record = ["", "", "", "", "", "", ""]
-    while choice != "m":
+    while choice != "r":
         os.system('cls')
-        print(f"MSG: {msg}")
+        print(f"{msg}")
         print(SUBMENU, end="")
         print(*record)
-        choice = input("Enter a char, m(enu) or q(uit): ")
+        choice = input("f(ill), r(eturn) or q(uit): ")
         match choice:
             case "i": # i. set id
                 record[0] = input("edit id: ")
                 # base = open_base(filename)
                 # msg = "Base is open" if type(base) != str else base
-            case "l": # l. set last name
+            case "l": # l. set last surname
                 record[1] = input("edit last name: ")
-            case "f": # f. set first name
+            case "n": # f. set first name
                 record[2] = input("edit first name: ")
-            case "o": # o. set middle name
+            case "m": # o. set middle name
                 record[3] = input("edit middle name: ")
             case "b": # b. set birthday
                 record[4] = input("edit birth day: ")
-            case "c": # c. set mobile
+            case "c": # c. set cellular mobile
                 record[5] = input("edit cellular: ")
             case "p": # p. set phone
                 record[6] = input("edit phone: ")
-            case "s": # s. search records
+            case "f": # s. search records
                 print(find_record(base, record))
-                # if find != str:
-                #     print(find)
-                # else:
-                #     print(find)
-                choice = input("d(elete), u(pdate):")
+                choice = input("a(ny) key to return:")
             case "a": # a. add/update record
                 base = add_record(base, record)
-                msg = "Record was added" if type(base) != str else base
+                "Record was added" if type(base) != str else base
+                choice = input("a(ny) key to return:")
             case "d": # d. delete record
                 base = del_record(base, record)
-                msg = "Record was deleted" if type(base) != str else base
+                "Record was deleted" if type(base) != str else base
+                choice = input("a(ny) key to return:")
             case "q":
                 exit()
     return base
