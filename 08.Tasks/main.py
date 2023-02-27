@@ -13,7 +13,7 @@ MENU = "\
 7. Delete record in base\n\
 8. Delete base file\n\
 9. Clean base\n\
-0. Import to base\n\
+0. Import/Export\n\
 Enter a number or q(uit): "
 
 SUBMENU = "\
@@ -26,6 +26,16 @@ c. set mobile\n\
 p. set phone\n\
 k. kill buffer\n\
 BUF: "
+
+PORT = "\
+ic. imports csv to base\n\
+ij. import json to base\n\
+ec. export to csv file\n\
+ej. export to json file\n\
+bc. buffer to csv file\n\
+bj. buffer to json file\n\
+BUF: "
+
 record = ["", "", "", "", "", "", ""]
 # 1 Open base
 def open_base(filename: str = "base.csv") -> pd.DataFrame:
@@ -54,20 +64,20 @@ def new_base(size: int = 200) -> pd.DataFrame :
     phone = pd.Series(['8' + ''.join(random.sample(phone_prefix, 1)) + str(random.randint(1111111, 9999999)) for i in range(size)])
     base = pd.DataFrame({ 'id': soc_id, 'last': last_name, 'first': first_name, 'middle': middle_name, 'birth': birth_day, 'cell': mobile, 'tel': phone })
     return base
-# 3 Save base to file
+# 3. Save base to file
 def save_base(base: pd.DataFrame, filename: str = "base.csv") -> str:
     if os.path.isfile(filename):
         try:
            base.to_csv(filename, index=False)
         except BaseException as error:
             return f"Error! {error}"
-        return f"File {filename} id updated"
+        return f"File {filename} is updated"
     else:
         try:
            base.to_csv(filename, index=False)
         except BaseException as error:
             return f"Error! {error}"
-        return f"File {filename} id created"
+        return f"File {filename} is created"
 # 4. Find record in base
 def find_record(base: pd.DataFrame) -> pd.DataFrame:
     columns = list(base.columns.values)
@@ -106,18 +116,13 @@ def del_file(filename: str) -> str:
 def clean_base(base: pd.DataFrame) -> pd.DataFrame:
     base = pd.DataFrame()
     return base
-#!0 Import to base
-def import_record(base: pd.DataFrame) -> pd.DataFrame:
-    length = [len(base)]
-    base.loc[length[0]] = length + record
-    return base
 # buffer
-def buffer(base, number): 
+def buffer(base: pd.DataFrame, number: int) -> None: 
     for i in range(len(record)):
         record[i] = base.loc[number].tolist()[i]
     return
 #kill set
-def kill_buffer():
+def kill_buffer() -> None:
     for i in range(len(record)):
         record[i] = ""
     return
@@ -159,8 +164,8 @@ def menu():
                 base = input("Enter word 'base' in prompt: ") 
                 base = clean_base(base)
                 msg = "Database is clean" if base.empty else f"Database contains {len(base)} rows"
-            case "0": # Import base
-                pass
+            case "0": # Import / Export
+                base = port(base)
     print("\033c", end="")
     return print("Have a nice day!\nGood Bye!")
 # Submenu 10 chars
@@ -205,9 +210,14 @@ def submenu(base: pd.DataFrame , msg: str) -> pd.DataFrame:
                 base = del_record(base)
                 print("Record was deleted") if type(base) != str else print(base)
                 choice = input("a(ny) key to return:")
-            case "u": # d. delete record
+            case "u": # u. update record
+                print("\033c", end="")
+                print(f"The BUFF:", end="")
+                print(*record, end="")
+                print(f' was in this record\n{base.loc[base["id"]==record[0]]}')
                 base = update_record(base)
                 print("Record was updated") if type(base) != str else print(base)
+                print(base.loc[base["id"]==record[0]])
                 choice = input("a(ny) key to return:")
             case "q":
                 print("\033c", end="")
@@ -215,4 +225,72 @@ def submenu(base: pd.DataFrame , msg: str) -> pd.DataFrame:
                 exit()
     return base
 
+def port(base: pd.DataFrame) -> pd.DataFrame:
+    choice = ""
+    while choice != "r":
+        print("\033c", end="")
+        #print(f"{msg}")
+        print(PORT, end="")
+        print(*record)
+        choice = input("fi(ll), r(eturn) or q(uit): ")
+        match choice:
+            case "ic": # ic. imports csv to base
+                print("\033c", end="")
+                sep = input("Enter separator , or t(ab): ")
+                encoding = input("Enter encoding utf8: ")
+                if sep == "t":
+                    sep ="\t"
+                filename = input("Enter name.csv to import: ")
+                chunk = pd.read_csv(filename, sep=sep, encoding=encoding, dtype=str)
+                base = pd.concat([base, chunk], ignore_index=True)
+                print(f"{len(chunk)} row from {filename} imported\nnew base have {len(base)} rows")
+                choice = input("press a(ny) key to return: ")
+            case "ij": # ij. import json to base
+                print("\033c", end="")
+                filename = input("Enter name.csv to import: ")
+                chunk = pd.read_json(filename, orient='split')
+                base = pd.concat([base, chunk], ignore_index=True)
+                print(f"{len(chunk)} row from {filename} imported\nnew base have {len(base)} rows")
+                choice = input("press a(ny) key to return: ")
+            case "ec": # ic. export to csv file
+                print("\033c", end="")
+                sep = input("Enter separator , or t(ab): ")
+                encoding = input("Enter encoding utf8: ")
+                if sep == "t":
+                    sep ="\t"
+                filename = datetime.datetime.now().strftime('%Y%m%d%H%M%S.csv')
+                base.to_csv(filename, sep=sep, encoding=encoding, index=False)
+                print(f"{len(base)} row exported to {filename}")
+                choice = input("press a(ny) key to return: ")
+            case "ej": # ij. export to json file
+                print("\033c", end="")
+                filename = datetime.datetime.now().strftime('%Y%m%d%H%M%S.json')
+                base.to_json(filename, orient='split', index=False)
+                print(f"{len(base)} row exported to {filename}")
+                choice = input("press a(ny) key to return: ")
+            case "bc": # bc. buffer to csv file
+                print("\033c", end="")
+                sep = input("Enter separator , or t(ab): ")
+                encoding = input("Enter encoding utf8: ")
+                if sep == "t":
+                    sep ="\t"
+                filename = datetime.datetime.now().strftime('%Y%m%d%H%M%S.csv')
+                found = find_record(base)
+                found.to_csv(filename, sep=sep, encoding=encoding, index=False)
+                print(f"{len(found)} row exported to {filename}")
+                choice = input("press a(ny) key to return: ")
+            case "bj": # bj. buffer to json file
+                print("\033c", end="")
+                filename = datetime.datetime.now().strftime('%Y%m%d%H%M%S.json')
+                found = find_record(base)
+                found.to_json(filename, orient='split', index=False)
+                print(f"{len(found)} row exported to {filename}")
+                choice = input("press a(ny) key to return: ")
+            case "q":
+                print("\033c", end="")
+                print("Have a nice day!\nGood Bye!")
+                exit()
+    return base
+
 menu()
+
